@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- ====================================================================== 
+	 
+     smallerdraw    
+     A pedagogical application for studying Design Patterns
+	 
+     Daniel W.H. James                                                                
+     ====================================================================== -->
+<project name="smallerdraw" default="compile">
+    <description>
+    A pedagogical application for studying Design Patterns
+    </description>
+	<!-- set global properties for this build -->
+	<property name="bin.dir" location="bin"/>
+	<property name="dist.dir"  location="dist"/>
+	<property name="doc.dir" location="doc"/>
+	<property name="src.dir" location="src"/>
+	<property name="base-package" value="uk.ac.ox.softeng.dpa.smallerdraw"/>
+	<property name="main-class" value="${base-package}.SmallerDraw"/>
+	<!-- - - - - - -  
+         target: init                      
+         - - - - - - -->
+	<target name="init">
+		<mkdir dir="${bin.dir}"/>
+		<mkdir dir="${dist.dir}"/>
+		<mkdir dir="${doc.dir}"/>
+	</target>
+	<!-- =============== 
+         target: src-zip              
+         =============== -->
+    <target name="src-zip" description="Zip sources">
+        <zip destfile="${dist.dir}/${ant.project.name}-src.zip" basedir="${src.dir}"/>
+    </target>
+
+	<!-- =============== 
+         target: compile              
+         =============== -->
+    <target name="compile" depends="init" description="Compile">
+        <javac srcdir="${src.dir}" destdir="${bin.dir}" debug="off"/>
+    </target>
+	<!-- =========== 
+         target: run              
+         =========== -->
+    <target name="run" depends="compile" description="Run">
+        <java classname="${main-class}" fork="true" spawn="true">
+        	<classpath>
+        		<pathelement path="${bin.dir}"/>
+        	    <pathelement path="${java.class.path}"/>
+        	</classpath>
+        </java>
+    </target>
+	<!-- =========== 
+         target: jar              
+         =========== -->
+	<target name="jar" depends="compile" description="Build Jar">
+		<jar destfile="${dist.dir}/${ant.project.name}.jar" basedir="${bin.dir}">
+			<manifest>
+				<attribute name="Built-By" value="Daniel W.H. James"/>
+				<attribute name="Main-Class" value="${main-class}"/>
+				<section name="uk/ac/ox/softeng/dpa/smallerdraw/">
+					<attribute name="Sealed" value="true"/>
+					<attribute name="Specification-Title" value="SmallerDraw"/>
+					<attribute name="Specification-Version" value="March 2012"/>
+					<attribute name="Specification-Vendor" value="Daniel W.H. James"/>
+					<attribute name="Implementation-Title" value="${base-package}"/>
+					<attribute name="Implementation-Version" value="March 2012"/>
+					<attribute name="Implementation-Vendor" value="Daniel W.H. James"/>
+				</section>
+			</manifest>
+		</jar>
+	</target>
+	<!-- ===============
+		 target: javadoc
+	     =============== -->
+    <target name="javadoc" depends="init" description="Generate JavaDoc">
+        <javadoc access="private" author="true" classpath="." destdir="${doc.dir}" doctitle="SmallerDraw" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" overview="${src.dir}/overview.html" packagenames="${base-package},${base-package}.command,${base-package}.tools,${base-package}.figures,${base-package}.util" source="1.6" sourcepath="${src.dir}" splitindex="true" use="true" version="true" windowtitle="SmallerDraw">
+            <link href="http://java.sun.com/javase/6/docs/api/"/>
+        </javadoc>
+    </target>
+	<!-- ================================= 
+          target: doc-zip              
+         ================================= -->
+    <target name="doc-zip" depends="javadoc" description="Zip JavaDoc">
+        <zip destfile="${dist.dir}/${ant.project.name}-doc.zip" basedir="${doc.dir}"/>
+    </target>
+	<!-- ============
+		 target: clean
+	     ============ -->
+	<target name="clean" description="Clean">
+		<delete dir="${bin.dir}"/>
+		<delete dir="${dist.dir}"/>
+		<delete dir="${doc.dir}"/>
+	</target>
+</project>

@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project default="javadoc">
-    <target name="javadoc">
-        <javadoc access="private" author="true" classpath="." destdir="doc" doctitle="SmallerDraw" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" overview="src/overview.html" packagenames="uk.ac.ox.softeng.dpa.smallerdraw,uk.ac.ox.softeng.dpa.smallerdraw.command,uk.ac.ox.softeng.dpa.smallerdraw.tools,uk.ac.ox.softeng.dpa.smallerdraw.figures,uk.ac.ox.softeng.dpa.smallerdraw.util" source="1.6" sourcepath="src" splitindex="true" use="true" version="true">
-            <link href="http://java.sun.com/javase/6/docs/api/"/>
-        </javadoc>
-    </target>
-</project>
