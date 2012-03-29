@@ -72,75 +72,6 @@ public abstract class AbstractRectangularFigure extends AbstractFigure {
 		this.modify(new SetBounds(nw, se));
 	}
 
-	protected void setCenter(final Point p) {
-		final Point c = RectangleUtils.getCenter(bounds);
-		this.move(new Dimension(p.x - c.x, p.y - c.y));
-	}
-
-	protected void setN(final Point p) {
-		final Point se = RectangleUtils.getSE(bounds);
-		if (se.y - p.y >= MINHEIGHT) {
-			final Point nw = RectangleUtils.getNW(bounds);
-			nw.translate(0, p.y - nw.y);
-			this.modify(new SetBounds(nw, se));
-		}
-	}
-	
-	protected void setW(final Point p) {
-		final Point se = RectangleUtils.getSE(bounds);
-		if (se.x - p.x >= MINWIDTH) {
-			final Point nw = RectangleUtils.getNW(bounds);
-			nw.translate(p.x - nw.x, 0);
-			this.modify(new SetBounds(nw, se));
-		}
-	}
-	
-	protected void setS(final Point p) {
-		final Point nw = RectangleUtils.getNW(bounds);
-		if (p.y - nw.y >= MINHEIGHT) {
-			final Point se = RectangleUtils.getSE(bounds);
-			se.translate(0, p.y - se.y);
-			this.modify(new SetBounds(nw, se));
-		}
-	}
-	
-	protected void setE(final Point p) {
-		final Point nw = RectangleUtils.getNW(bounds);
-		if (p.x - nw.x >= MINWIDTH) {
-			final Point se = RectangleUtils.getSE(bounds);
-			se.translate(p.x - se.x, 0);
-			this.modify(new SetBounds(nw, se));
-		}
-	}
-	
-	protected void setNE(final Point p) {
-		final Point sw = RectangleUtils.getSW(bounds);
-		if (p.x - sw.x >= MINWIDTH && sw.y - p.y >= MINHEIGHT) {
-			this.modify(new SetBounds(p, sw));
-		}
-	}
-
-	protected void setNW(final Point p) {
-		final Point se = RectangleUtils.getSE(bounds);
-		if (se.x - p.x >= MINWIDTH && se.y - p.y >= MINHEIGHT) {
-			this.modify(new SetBounds(p, se));
-		}
-	}
-
-	protected void setSE(final Point p) {
-		final Point nw = RectangleUtils.getNW(bounds);
-		if (p.x - nw.x >= MINWIDTH && p.y - nw.y >= MINHEIGHT) {
-			this.modify(new SetBounds(p, nw));
-		}
-	}
-
-	protected void setSW(final Point p) {
-		final Point ne = RectangleUtils.getNE(bounds);
-		if (ne.x - p.x >= MINWIDTH && p.y - ne.y >= MINHEIGHT) {
-			this.modify(new SetBounds(p, ne));
-		}
-	}
-
 	protected final class SetBounds implements ModifyCommand {
 		private final Rectangle r;
 
@@ -166,7 +97,8 @@ public abstract class AbstractRectangularFigure extends AbstractFigure {
 	
 		@Override
 		public void setLocation(Point p) {
-			setCenter(p);
+			Point c = getLocation();
+			move(new Dimension(p.x - c.x, p.y - c.y));
 		}
 		
 	}
@@ -179,7 +111,12 @@ public abstract class AbstractRectangularFigure extends AbstractFigure {
 
 		@Override
 		public void setLocation(Point p) {
-			setN(p);
+			Point se = RectangleUtils.getSE(bounds);
+			if (se.y - p.y >= MINHEIGHT) {
+				Point nw = RectangleUtils.getNW(bounds);
+				nw.translate(0, p.y - nw.y);
+				modify(new SetBounds(nw, se));
+			}
 		}
 	}
 	
@@ -191,7 +128,12 @@ public abstract class AbstractRectangularFigure extends AbstractFigure {
 
 		@Override
 		public void setLocation(Point p) {
-			setS(p);
+			Point nw = RectangleUtils.getNW(bounds);
+			if (p.y - nw.y >= MINHEIGHT) {
+				Point se = RectangleUtils.getSE(bounds);
+				se.translate(0, p.y - se.y);
+				modify(new SetBounds(nw, se));
+			}
 		}
 	}
 	
@@ -203,7 +145,12 @@ public abstract class AbstractRectangularFigure extends AbstractFigure {
 	
 		@Override
 		public void setLocation(Point p) {
-			setE(p);
+			Point nw = RectangleUtils.getNW(bounds);
+			if (p.x - nw.x >= MINWIDTH) {
+				Point se = RectangleUtils.getSE(bounds);
+				se.translate(p.x - se.x, 0);
+				modify(new SetBounds(nw, se));
+			}
 		}
 	}
 
@@ -215,7 +162,12 @@ public abstract class AbstractRectangularFigure extends AbstractFigure {
 
 		@Override
 		public void setLocation(Point p) {
-			setW(p);
+			Point se = RectangleUtils.getSE(bounds);
+			if (se.x - p.x >= MINWIDTH) {
+				Point nw = RectangleUtils.getNW(bounds);
+				nw.translate(p.x - nw.x, 0);
+				modify(new SetBounds(nw, se));
+			}
 		}
 	}
 	
@@ -227,7 +179,10 @@ public abstract class AbstractRectangularFigure extends AbstractFigure {
 	
 		@Override
 		public void setLocation(Point p) {
-			setNE(p);
+			Point sw = RectangleUtils.getSW(bounds);
+			if (p.x - sw.x >= MINWIDTH && sw.y - p.y >= MINHEIGHT) {
+				modify(new SetBounds(p, sw));
+			}
 		}
 	}
 
@@ -239,7 +194,10 @@ public abstract class AbstractRectangularFigure extends AbstractFigure {
 	
 		@Override
 		public void setLocation(Point p) {
-			setNW(p);
+			Point se = RectangleUtils.getSE(bounds);
+			if (se.x - p.x >= MINWIDTH && se.y - p.y >= MINHEIGHT) {
+				modify(new SetBounds(p, se));
+			}
 		}
 	}
 
@@ -251,7 +209,10 @@ public abstract class AbstractRectangularFigure extends AbstractFigure {
 	
 		@Override
 		public void setLocation(Point p) {
-			setSE(p);
+			Point nw = RectangleUtils.getNW(bounds);
+			if (p.x - nw.x >= MINWIDTH && p.y - nw.y >= MINHEIGHT) {
+				modify(new SetBounds(p, nw));
+			}
 		}
 	}
 
@@ -263,7 +224,10 @@ public abstract class AbstractRectangularFigure extends AbstractFigure {
 	
 		@Override
 		public void setLocation(Point p) {
-			setSW(p);
+			Point ne = RectangleUtils.getNE(bounds);
+			if (ne.x - p.x >= MINWIDTH && p.y - ne.y >= MINHEIGHT) {
+				modify(new SetBounds(p, ne));
+			}
 		}
 	}
 }
