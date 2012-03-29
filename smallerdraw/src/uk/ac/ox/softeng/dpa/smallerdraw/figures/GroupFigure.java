@@ -59,6 +59,12 @@ public class GroupFigure extends AbstractFigure {
 		return subFigures;
 	}
 	
+	protected void traverse(FigureAction action) {
+		for (Figure figure : subFigures) {
+			action.execute(figure);
+		}
+	}
+
 	/** 
 	 * Draw this group figure by drawing all of its subfigures,
 	 * and then draw the group figure’s handle.
@@ -67,27 +73,36 @@ public class GroupFigure extends AbstractFigure {
 	 * @see AbstractFigure#draw(Graphics2D)
 	 */
 	@Override
-	public void draw(Graphics2D g) {
-		for (Figure figure : subFigures) {
-			figure.draw(g);
-		}
+	public void draw(final Graphics2D g) {
+		traverse(new FigureAction() {
+			@Override
+			public void execute(Figure figure) {
+				figure.draw(g);
+			}
+		});
 		drawHandles(g);
 	}
 
 	@Override
 	public Rectangle getBounds() {
-		Rectangle r = new Rectangle(0, 0, -1, -1);
-		for (Figure figure : subFigures) {
-			r.add(figure.getBounds());
-		}
+		final Rectangle r = new Rectangle(0, 0, -1, -1);
+		traverse(new FigureAction() {
+			@Override
+			public void execute(Figure figure) {
+				r.add(figure.getBounds());
+			}
+		});
 		return r;
 	}
 
 	@Override
-	public void move(Dimension offset) {
-		for (Figure figure : subFigures) {
-			figure.move(offset);
-		}
+	public void move(final Dimension offset) {
+		traverse(new FigureAction() {
+			@Override
+			public void execute(Figure figure) {
+				figure.move(offset);
+			}
+		});
 	}
 
 	@Override
@@ -157,4 +172,7 @@ public class GroupFigure extends AbstractFigure {
 		}
 	}
 
+	private interface FigureAction {
+		void execute(Figure figure);
+	}
 }
