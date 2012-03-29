@@ -9,7 +9,6 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -29,6 +28,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 
+import uk.ac.ox.softeng.dpa.smallerdraw.figures.GroupFigure;
 import uk.ac.ox.softeng.dpa.smallerdraw.figures.OvalFigure;
 import uk.ac.ox.softeng.dpa.smallerdraw.figures.RectangleFigure;
 import uk.ac.ox.softeng.dpa.smallerdraw.tools.ConnectorTool;
@@ -36,6 +36,7 @@ import uk.ac.ox.softeng.dpa.smallerdraw.tools.LineTool;
 import uk.ac.ox.softeng.dpa.smallerdraw.tools.PolygonTool;
 import uk.ac.ox.softeng.dpa.smallerdraw.tools.RectangularTool;
 import uk.ac.ox.softeng.dpa.smallerdraw.tools.SelectionTool;
+import uk.ac.ox.softeng.dpa.smallerdraw.util.IterableUtils;
 
 /**
  * Setup the Java Swing GUI
@@ -114,6 +115,17 @@ public class SmallerDraw {
 		action = new FilledMenuAction(picture);
 		menu.add(new JMenuItem(action));
 		popupMenu.add(new JMenuItem(action));
+		
+		menu.addSeparator();
+		popupMenu.addSeparator();
+		
+		action = new GroupMenuAction(picture);
+		menu.add(new JMenuItem(action));
+		popupMenu.add(new JMenuItem(action));
+		
+		action = new UngroupMenuAction(picture);
+		menu.add(new JMenuItem(action));
+		popupMenu.add(new JMenuItem(action));
 		// end Edit menu
 	}
 	
@@ -186,10 +198,7 @@ public class SmallerDraw {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			List<Figure> selectedFigures = new ArrayList<Figure>();
-			for (Figure figure : model.selectedFigures()) {
-				selectedFigures.add(figure);
-			}
+			List<Figure> selectedFigures = IterableUtils.makeList(model.selectedFigures());
 			for (Figure figure : selectedFigures) {
 				model.delete(figure);
 			}
@@ -274,6 +283,75 @@ public class SmallerDraw {
 		public void actionPerformed(ActionEvent e) {
 			for (Figure figure : model.selectedFigures()) {
 				figure.setFilled(true);
+			}
+		}
+	}
+	
+	/**
+	 * The action for the 'Group' menu item.
+	 */
+	@SuppressWarnings("serial")
+	private static final class GroupMenuAction extends AbstractAction {
+		private final SelectableModel model;
+
+		private GroupMenuAction(SelectableModel model) {
+			super("Group");
+			this.model = model;
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			List<Figure> selectedFigures = IterableUtils.makeList(model.selectedFigures());
+			GroupFigure groupFigure = new GroupFigure(selectedFigures);
+			/*
+			 * The selected figures must be removed from the picture
+			 * before the group figure is added to the picture. This is
+			 * because by removing the figures, their redraw commands
+			 * will be taken away. When the group is added to the picture
+			 * it is given its own redraw command, which it will then
+			 * distribute to its subfigures.
+			 */
+			for (Figure figure : selectedFigures) {
+				model.remove(figure);
+			}
+			model.add(groupFigure);
+			groupFigure.setSelected(true);
+		}
+	}
+	
+	@SuppressWarnings("serial")
+	private static final class UngroupMenuAction extends AbstractAction {
+		private final SelectableModel model;
+		
+		private UngroupMenuAction(SelectableModel model) {
+			super("Ungroup");
+			this.model = model;
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			List<Figure> selectedFigures = IterableUtils.makeList(model.selectedFigures());
+			for (Figure selectedFigure : selectedFigures) {
+				if (selectedFigure instanceof GroupFigure) {
+					GroupFigure groupFigure = (GroupFigure) selectedFigure;
+					/*
+					 * Delete the groupFigure, rather than remove, as there
+					 * may have been connecting lines to the group figure’s
+					 * handle(s).
+					 * 
+					 * Like in the GroupMenu Action, this deletion must happen
+					 * before the subfigures are added back to the model, as
+					 * the act of deleting the group figure will nullify its
+					 * redraw command, and thus the redraw commands of its
+					 * subfigures. The subfigures get them back when we readd
+					 * them to the model.
+					 */
+					model.delete(groupFigure);
+					for (Figure subFigure : groupFigure.getSubFigures()) {
+						subFigure.setSelected(true);
+						model.add(subFigure);
+					}
+				}
 			}
 		}
 	}
