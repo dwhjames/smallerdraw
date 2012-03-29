@@ -63,6 +63,16 @@ public class Picture implements SelectableModel, Drawable {
 	}
 	
 	@Override
+	public Iterable<Figure> figuresReversed() {
+		return new Iterable<Figure>() {
+			@Override
+			public Iterator<Figure> iterator() {
+				return new FiguresReversedIterator();
+			}
+		};
+	}
+	
+	@Override
 	public Iterable<Figure> selectedFigures() {
 		return new Iterable<Figure>() {
 			@Override
@@ -116,6 +126,29 @@ public class Picture implements SelectableModel, Drawable {
 		@Override
 		public void execute(Rectangle clip) {
 			redraw(clip);
+		}
+	}
+
+	private final class FiguresReversedIterator implements Iterator<Figure> {
+		int i = figures.size();
+	
+		@Override
+		public boolean hasNext() {
+			return i > 0;
+		}
+
+		@Override
+		public Figure next() {
+			if (hasNext()) {
+				return figures.get(--i);
+			} else {
+				throw new NoSuchElementException();
+			}
+		}
+	
+		@Override
+		public void remove() {
+			throw new UnsupportedOperationException();
 		}
 	}
 

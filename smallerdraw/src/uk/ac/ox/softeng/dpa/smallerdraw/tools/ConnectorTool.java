@@ -28,7 +28,7 @@ public class ConnectorTool extends EmptyTool {
 	
 	@Override
 	public void onMouseDown(Point pos) {
-		for (Figure figure : model.figures()) {
+		for (Figure figure : model.figuresReversed()) {
 			if ((handle = figure.handleAt(pos)) != null) {
 				break;
 			}
@@ -53,7 +53,7 @@ public class ConnectorTool extends EmptyTool {
 		if (figure != null) {
 			Handle startHandle = handle;
 			Handle endHandle = null;
-			for (Figure figure : model.figures()) {
+			for (Figure figure : model.figuresReversed()) {
 				if (this.figure != figure &&
 					(endHandle = figure.handleAt(pos)) != null) {
 					break;

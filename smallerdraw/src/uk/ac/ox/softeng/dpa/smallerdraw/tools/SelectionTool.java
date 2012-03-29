@@ -29,7 +29,7 @@ public class SelectionTool implements Tool {
 
 	@Override
 	public void onMouseDown(final Point pos) {
-		for (Figure figure : model.figures()) {
+		for (Figure figure : model.figuresReversed()) {
 			if (figure.isSelected() && (locator = figure.handleAt(pos)) != null) {
 				break;
 			}

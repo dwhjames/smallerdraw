@@ -50,5 +50,13 @@ public interface Model {
 	 * @return a collection of figures
 	 */
 	Iterable<Figure> figures();
+	
+	/**
+	 * Returns an iterable collection of figures, in the reverse of the
+	 * order they were added to this model.
+	 * 
+	 * @return a collection of figures
+	 */
+	Iterable<Figure> figuresReversed();
 
 }
