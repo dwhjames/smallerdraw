@@ -17,17 +17,31 @@ public interface Model {
 	 * @param figure
 	 *            the figure to add
 	 * @see #remove(Figure)
+	 * @see #delete(Figure)
 	 */
 	void add(Figure figure);
 
 	/**
 	 * Remove a figure from this model.
 	 * 
+	 * This picture will no longer directly include the given figure.
+	 * 
 	 * @param figure
 	 *            the figure to remove
 	 * @see #add(Figure)
+	 * @see #delete(Figure)
 	 */
 	void remove(Figure figure);
+	
+	/**
+	 * Delete a figure from this model..
+	 * 
+	 * The given figure will be {@linkplain #remove(Figure) removed},
+	 * and all links (such as connecting lines) will be severed. 
+	 * 
+	 * @param figure the figure to delete
+	 */
+	void delete(Figure figure);
 
 	/**
 	 * Returns an iterable collection of figures, in the order they were added

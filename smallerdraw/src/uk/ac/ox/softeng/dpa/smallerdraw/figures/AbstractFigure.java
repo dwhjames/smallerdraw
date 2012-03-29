@@ -9,6 +9,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.Stroke;
 
+import uk.ac.ox.softeng.dpa.smallerdraw.Disposable;
 import uk.ac.ox.softeng.dpa.smallerdraw.Handle;
 import uk.ac.ox.softeng.dpa.smallerdraw.Drawable;
 import uk.ac.ox.softeng.dpa.smallerdraw.Figure;
@@ -136,6 +137,19 @@ public abstract class AbstractFigure implements Figure {
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * Dispose of this figure by disposing of all of its handles
+	 * 
+	 * @see Disposable#dispose()
+	 * @see Handle#dispose()
+	 */
+	@Override
+	public void dispose() {
+		for (Handle handle : handles) {
+			handle.dispose();
+		}
 	}
 	
 	/**

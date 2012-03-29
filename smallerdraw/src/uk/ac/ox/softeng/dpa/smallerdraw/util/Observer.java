@@ -10,5 +10,19 @@ package uk.ac.ox.softeng.dpa.smallerdraw.util;
  * @see Observable
  */
 public interface Observer<T> {
+	/**
+	 * Receive data of type {@code T} as an update.
+	 * 
+	 * @param t the data of the update message
+	 * @see #finished()
+	 */
 	void update(T t);
+
+	/**
+	 * Receive a signal that the observable object
+	 * will no longer be broadcasting updates.
+	 * 
+	 * @see #update(Object)
+	 */
+	void finished();
 }

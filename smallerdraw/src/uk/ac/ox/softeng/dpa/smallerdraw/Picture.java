@@ -52,6 +52,12 @@ public class Picture implements SelectableModel, Drawable {
 	}
 	
 	@Override
+	public void delete(Figure figure) {
+		figure.dispose();
+		this.remove(figure);
+	}
+	
+	@Override
 	public Iterable<Figure> figures() {
 		return figures;
 	}

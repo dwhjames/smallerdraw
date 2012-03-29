@@ -18,7 +18,7 @@ import uk.ac.ox.softeng.dpa.smallerdraw.command.RedrawCommand;
  * @author Daniel W.H. James
  * @version DPA March 2012
  */
-public interface Figure extends Drawable {
+public interface Figure extends Drawable, Disposable {
 	/**
 	 * Compute the smallest rectangle that bounds this figure.
 	 * 

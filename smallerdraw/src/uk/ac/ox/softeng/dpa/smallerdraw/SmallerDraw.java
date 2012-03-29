@@ -9,6 +9,8 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -87,6 +89,13 @@ public class SmallerDraw {
 		menu = new JMenu("Edit");
 		menuBar.add(menu);
 		
+		action = new DeleteMenuAction(picture);
+		menu.add(new JMenuItem(action));
+		popupMenu.add(new JMenuItem(action));
+		
+		menu.addSeparator();
+		popupMenu.addSeparator();
+		
 		action = new SelectMenuAction(picture);
 		menu.add(new JMenuItem(action));
 		popupMenu.add(new JMenuItem(action));
@@ -159,6 +168,32 @@ public class SmallerDraw {
 		canvas.setMinimumSize(new Dimension(320, 240));
 		canvas.setPreferredSize(new Dimension(640, 480));
 		pane.add(canvas, BorderLayout.CENTER);
+	}
+	
+	/**
+	 * The action for the 'Delete' menu item.
+	 */
+	@SuppressWarnings("serial")
+	private static final class DeleteMenuAction extends AbstractAction {
+		private final SelectableModel model;
+
+		private DeleteMenuAction(SelectableModel model) {
+			super("Delete");
+			this.model = model;
+			putValue(ACCELERATOR_KEY,
+					 KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0));
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			List<Figure> selectedFigures = new ArrayList<Figure>();
+			for (Figure figure : model.selectedFigures()) {
+				selectedFigures.add(figure);
+			}
+			for (Figure figure : selectedFigures) {
+				model.delete(figure);
+			}
+		}
 	}
 	
 	/**

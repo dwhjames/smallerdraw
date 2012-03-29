@@ -2,24 +2,25 @@ package uk.ac.ox.softeng.dpa.smallerdraw.tools;
 
 import java.awt.Point;
 
-import uk.ac.ox.softeng.dpa.smallerdraw.Handle;
+import uk.ac.ox.softeng.dpa.smallerdraw.Disposable;
 import uk.ac.ox.softeng.dpa.smallerdraw.Figure;
+import uk.ac.ox.softeng.dpa.smallerdraw.Handle;
 import uk.ac.ox.softeng.dpa.smallerdraw.Model;
-import uk.ac.ox.softeng.dpa.smallerdraw.figures.LineFigure;
-import uk.ac.ox.softeng.dpa.smallerdraw.util.Observer;
+import uk.ac.ox.softeng.dpa.smallerdraw.figures.ConnectingLineFigure;
+import uk.ac.ox.softeng.dpa.smallerdraw.figures.ConnectingLineFigure.ConnectingLineObserver;
 
 /**
  * A tool for drawing connecting lines between handles.
  * 
  * @author Daniel W.H. James
  * @version DPA March 2012
- * @see LineFigure
+ * @see ConnectingLineFigure
  * @see Handle
  */
 public class ConnectorTool extends EmptyTool {
 	
 	private Handle handle;
-	private LineFigure figure;
+	private ConnectingLineFigure figure;
 
 	public ConnectorTool(Model model) {
 		super(model);
@@ -39,7 +40,7 @@ public class ConnectorTool extends EmptyTool {
 	public void onMouseDrag(Point pos) {
 		if (handle != null) {
 			if (figure == null) {
-				figure = new LineFigure(handle.getLocation(), pos);
+				figure = new ConnectingLineFigure(handle.getLocation(), pos, model);
 				model.add(figure);
 			} else {
 				figure.setEnd(pos);
@@ -62,46 +63,20 @@ public class ConnectorTool extends EmptyTool {
 				model.remove(figure);
 			} else {
 				figure.setEnd(endHandle.getLocation());
-				startHandle.subscribe(new StartObserver(figure));
-				endHandle.subscribe(new EndObserver(figure));
+				
+				ConnectingLineObserver startObs = figure.getStartObserver();
+				ConnectingLineObserver endObs   = figure.getEndObserver();
+				
+				Disposable unsubscriber;
+				unsubscriber = startHandle.subscribe(startObs);
+				startObs.setUnsubscriber(unsubscriber);
+				
+				unsubscriber = endHandle.subscribe(endObs);
+				endObs.setUnsubscriber(unsubscriber);
 			}
 		}
 		handle = null;
 		figure = null;
-	}
-	
-	/**
-	 * An observer to update the start location of this line figure.
-	 */
-	private final class StartObserver implements Observer<Point> {
-		
-		private final LineFigure figure;
-		
-		private StartObserver(LineFigure figure) {
-			this.figure = figure;
-		}
-		
-		@Override
-		public void update(Point p) {
-			this.figure.setStart(p);
-		}
-	}
-
-	/**
-	 * An observer to update the end location of this line figure.
-	 */
-	private final class EndObserver implements Observer<Point> {
-		
-		private final LineFigure figure;
-		
-		private EndObserver(LineFigure figure) {
-			this.figure = figure;
-		}
-		
-		@Override
-		public void update(Point p) {
-			this.figure.setEnd(p);
-		}
 	}
 
 }

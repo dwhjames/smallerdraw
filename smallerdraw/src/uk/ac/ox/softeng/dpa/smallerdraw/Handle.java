@@ -24,7 +24,7 @@ import uk.ac.ox.softeng.dpa.smallerdraw.util.Observer;
  * @see Figure
  * @see ConnectorTool
  */
-public class Handle implements Drawable, Locatable, Observable<Point> {
+public class Handle implements Drawable, Locatable, Observable<Point>, Disposable {
 	
 	public static final int WIDTH = 4;
 	public static final int HEIGHT = 4;
@@ -76,8 +76,14 @@ public class Handle implements Drawable, Locatable, Observable<Point> {
 	}
 
 	@Override
-	public void subscribe(Observer<Point> observer) {
+	public Disposable subscribe(final Observer<Point> observer) {
 		observers.add(observer);
+		return new Disposable() {
+			@Override
+			public void dispose() {
+				observers.remove(observer);
+			}
+		};
 	}
 
 	/**
@@ -90,6 +96,28 @@ public class Handle implements Drawable, Locatable, Observable<Point> {
 	public void locationChanged() {
 		for (Observer<Point> observer : observers) {
 			observer.update(getLocation());
+		}
+	}
+
+	/**
+	 * Dispose of this handle by sending the {@linkplain Observer#finished() finished}
+	 * message to all of its observers.
+	 * 
+	 * @see Disposable#dispose()
+	 * @see Observer#finished()
+	 */
+	@Override
+	public void dispose() {
+		/*
+		 * IMPORTANT NOTE!
+		 * This *cannot* be implemented with a foreach!
+		 * This is because sending the finished method to
+		 * observers may trigger other figures and handles
+		 * to be disposed and thus more observers to be
+		 * unsubscribed, while this iteration is in progress!
+		 */
+		for (int i = 0; i < observers.size(); i++) {
+			observers.get(i).finished();
 		}
 	}
 }
