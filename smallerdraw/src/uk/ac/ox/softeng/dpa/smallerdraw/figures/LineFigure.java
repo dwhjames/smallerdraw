@@ -24,12 +24,26 @@ public class LineFigure extends AbstractFigure {
 	public LineFigure(Point start, Point end) {
 		this.start = start;
 		this.end   = end;
+		initializeHandles();
+	}
+	
+	public LineFigure(LineFigure that) {
+		this.start = new Point(that.start);
+		this.end = new Point(that.end);
+		initializeHandles();
+	}
+	
+	private void initializeHandles() {
 		handles = new Handle[] {
 			new Handle(new StartLocator()),
 			new Handle(new EndLocactor())
 		};
 	}
 	
+	public LineFigure clone() {
+		return new LineFigure(this);
+	}
+
 	@Override
 	public Rectangle getBounds() {
 		return Geometry.rectangleFromPoints(start, end);

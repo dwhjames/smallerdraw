@@ -27,11 +27,24 @@ public class PolygonFigure extends AbstractFigure {
 	
 	public PolygonFigure(Point[] polygon) {
 		this.polygon = polygon;
-		
+		initializeHandles();
+	}
+	
+	public PolygonFigure(PolygonFigure that) {
+		super(that);
+		this.polygon = Arrays.copyOf(that.polygon, that.polygon.length);
+		initializeHandles();
+	}
+	
+	private void initializeHandles() {
 		handles = new Handle[polygon.length];
 		for (int i = 0; i < polygon.length; i++) {
 			handles[i] = new Handle(new PolygonPointLocator(i));
 		}
+	}
+	
+	public PolygonFigure clone() {
+		return new PolygonFigure(this);
 	}
 	
 	/**

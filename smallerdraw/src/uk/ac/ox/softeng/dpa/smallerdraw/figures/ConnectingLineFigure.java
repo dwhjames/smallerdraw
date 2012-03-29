@@ -16,16 +16,33 @@ import uk.ac.ox.softeng.dpa.smallerdraw.util.Observer;
  */
 public class ConnectingLineFigure extends LineFigure {
 	
-	private final StartObserver startObserver;
-	private final EndObserver endObserver;
+	private Model model; // TODO we may need a getter and setter later 
+	private StartObserver startObserver;
+	private EndObserver endObserver;
 
 	public ConnectingLineFigure(Point start, Point end, Model model) {
 		super(start, end);
 		handles = new Handle[0];
+		this.model = model;
+		initializeObservers();
+	}
+	
+	public ConnectingLineFigure(ConnectingLineFigure that) {
+		super(that);
+		handles = new Handle[0];
+		this.model = that.model;
+		initializeObservers();
+	}
+	
+	private void initializeObservers() {
 		startObserver = new StartObserver(model);
 		endObserver = new EndObserver(model);
 		startObserver.setOther(endObserver);
 		endObserver.setOther(startObserver);
+	}
+	
+	public ConnectingLineFigure clone() {
+		return new ConnectingLineFigure(this);
 	}
 	
 	/**

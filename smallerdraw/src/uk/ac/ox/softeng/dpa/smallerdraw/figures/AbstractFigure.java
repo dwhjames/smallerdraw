@@ -10,12 +10,12 @@ import java.awt.Shape;
 import java.awt.Stroke;
 
 import uk.ac.ox.softeng.dpa.smallerdraw.Disposable;
-import uk.ac.ox.softeng.dpa.smallerdraw.Handle;
 import uk.ac.ox.softeng.dpa.smallerdraw.Drawable;
 import uk.ac.ox.softeng.dpa.smallerdraw.Figure;
+import uk.ac.ox.softeng.dpa.smallerdraw.Handle;
 import uk.ac.ox.softeng.dpa.smallerdraw.command.ModifyCommand;
-import uk.ac.ox.softeng.dpa.smallerdraw.command.RedrawCommand;
 import uk.ac.ox.softeng.dpa.smallerdraw.command.NullRedrawCommand;
+import uk.ac.ox.softeng.dpa.smallerdraw.command.RedrawCommand;
 
 /**
  * This class contains the common functionality of figures, including drawing
@@ -38,6 +38,17 @@ public abstract class AbstractFigure implements Figure {
 	private RedrawCommand redrawCommand = NullRedrawCommand.getInstance();
 	
 	protected Handle[] handles = new Handle[0];
+	
+	public AbstractFigure() { }
+	
+	public AbstractFigure(AbstractFigure that) {
+		this.selected = that.selected;
+		this.filled = that.filled;
+		this.redrawCommand = that.redrawCommand;
+		// handles will be copied in subclasses
+	}
+	
+	public abstract AbstractFigure clone();
 	
 	@Override
 	public void setRedrawCommand(RedrawCommand redrawCommand) {

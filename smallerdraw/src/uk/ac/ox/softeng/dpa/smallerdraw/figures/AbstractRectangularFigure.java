@@ -19,9 +19,20 @@ public abstract class AbstractRectangularFigure extends AbstractFigure {
 
 	public static final int MINWIDTH = 20, MINHEIGHT = 20;
 	
-	private Rectangle bounds = new Rectangle();
+	private Rectangle bounds;
 	
 	public AbstractRectangularFigure() {
+		this.bounds = new Rectangle();
+		initializeHandles();
+	}
+	
+	public AbstractRectangularFigure(AbstractRectangularFigure that) {
+		super(that);
+		this.bounds = new Rectangle(that.bounds);
+		initializeHandles();
+	}
+	
+	private void initializeHandles() {
 		this.handles = new Handle[] {
 			new Handle(new CLocator()),
 			new Handle(new NLocator()),
@@ -34,6 +45,8 @@ public abstract class AbstractRectangularFigure extends AbstractFigure {
 			new Handle(new SWLocator())
 		};
 	}
+	
+	public abstract AbstractRectangularFigure clone();
 	
 	@Override
 	public Rectangle getBounds() {

@@ -5,6 +5,7 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.util.ArrayList;
 import java.util.List;
 
 import uk.ac.ox.softeng.dpa.smallerdraw.Figure;
@@ -27,9 +28,26 @@ public class GroupFigure extends AbstractFigure {
 		for (Figure figure : subFigures) {
 			figure.setSelected(false);
 		}
-		this.handles = new Handle[] {
+		initializeHandles();
+	}
+	
+	public GroupFigure(GroupFigure that) {
+		super(that);
+		this.subFigures = new ArrayList<Figure>();
+		for (Figure figure : that.subFigures) {
+			this.subFigures.add(figure.clone());
+		}
+		initializeHandles();
+	}
+	
+	private void initializeHandles() {
+		handles = new Handle[] {
 			new Handle(new GroupLocator())
 		};
+	}
+	
+	public GroupFigure clone() {
+		return new GroupFigure(this);
 	}
 	
 	/**

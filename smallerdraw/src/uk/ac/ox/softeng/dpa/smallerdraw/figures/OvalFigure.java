@@ -16,6 +16,14 @@ public class OvalFigure extends AbstractRectangularFigure {
 	public OvalFigure() {
 		super();
 	}
+	
+	public OvalFigure(OvalFigure that) {
+		super(that);
+	}
+	
+	public OvalFigure clone() {
+		return new OvalFigure(this);
+	}
 
 	@Override
 	public boolean contains(Point p) {

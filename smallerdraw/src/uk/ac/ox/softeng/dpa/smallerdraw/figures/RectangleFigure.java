@@ -17,6 +17,14 @@ public class RectangleFigure extends AbstractRectangularFigure {
 		super();
 	}
 	
+	public RectangleFigure(RectangleFigure that) {
+		super(that);
+	}
+	
+	public RectangleFigure clone() {
+		return new RectangleFigure(this);
+	}
+	
 	@Override
 	public boolean contains(Point p) {
 		if (isFilled()) {

@@ -18,7 +18,7 @@ import uk.ac.ox.softeng.dpa.smallerdraw.command.RedrawCommand;
  * @author Daniel W.H. James
  * @version DPA March 2012
  */
-public interface Figure extends Drawable, Disposable {
+public interface Figure extends Drawable, Disposable, Cloneable {
 	/**
 	 * Compute the smallest rectangle that bounds this figure.
 	 * 
@@ -96,4 +96,12 @@ public interface Figure extends Drawable, Disposable {
 	 * @param redrawCommand the command object for redrawing
 	 */
 	void setRedrawCommand(RedrawCommand redrawCommand);
+
+	/**
+	 * Returns a clone of this figure.
+	 * 
+	 * @return a clone of this figure
+	 * @see Cloneable
+	 */
+	Figure clone();
 }
