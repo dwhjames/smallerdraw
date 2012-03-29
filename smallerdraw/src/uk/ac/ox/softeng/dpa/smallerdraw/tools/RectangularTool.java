@@ -5,6 +5,7 @@ import java.awt.Rectangle;
 
 import uk.ac.ox.softeng.dpa.smallerdraw.Model;
 import uk.ac.ox.softeng.dpa.smallerdraw.figures.AbstractRectangularFigure;
+import uk.ac.ox.softeng.dpa.smallerdraw.figures.RectangularHandlesDecorator;
 import uk.ac.ox.softeng.dpa.smallerdraw.util.Geometry;
 
 /**
@@ -22,7 +23,7 @@ public class RectangularTool extends EmptyTool {
 
 	public RectangularTool(Model model, AbstractRectangularFigure prototype) {
 		super(model);
-		this.prototype = prototype;
+		this.prototype = new RectangularHandlesDecorator(prototype);
 	}
 
 	@Override
