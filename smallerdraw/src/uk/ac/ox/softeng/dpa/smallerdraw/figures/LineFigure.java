@@ -28,6 +28,7 @@ public class LineFigure extends AbstractFigure {
 	}
 	
 	public LineFigure(LineFigure that) {
+		super(that);
 		this.start = new Point(that.start);
 		this.end = new Point(that.end);
 		initializeHandles();
