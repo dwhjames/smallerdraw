@@ -5,6 +5,8 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
 
+import uk.ac.ox.softeng.dpa.smallerdraw.util.RectangleUtils;
+
 /**
  * A figure for ovals.
  * 
@@ -30,8 +32,8 @@ public class OvalFigure extends AbstractRectangularFigure {
 		if (isFilled()) {
 			return createShape().contains(p);
 		} else {
-			Point c = this.getCenter();
 			Rectangle rs = this.getBounds();
+			Point c = RectangleUtils.getCenter(rs);
 			rs.grow(-5, -5);
 			Rectangle rb = this.getBounds();
 			rb.grow(5, 5);

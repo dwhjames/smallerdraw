@@ -12,6 +12,7 @@ import uk.ac.ox.softeng.dpa.smallerdraw.Figure;
 import uk.ac.ox.softeng.dpa.smallerdraw.Handle;
 import uk.ac.ox.softeng.dpa.smallerdraw.Locatable;
 import uk.ac.ox.softeng.dpa.smallerdraw.command.RedrawCommand;
+import uk.ac.ox.softeng.dpa.smallerdraw.util.RectangleUtils;
 
 /**
  * A figure that is a grouping of other figures.
@@ -165,10 +166,7 @@ public class GroupFigure extends AbstractFigure {
 	
 		@Override
 		public Point getLocation() {
-			Rectangle r = getBounds();
-			Point p = r.getLocation();
-			p.translate(r.width / 2, r.height / 2);
-			return p;
+			return RectangleUtils.getCenter(getBounds());
 		}
 	}
 

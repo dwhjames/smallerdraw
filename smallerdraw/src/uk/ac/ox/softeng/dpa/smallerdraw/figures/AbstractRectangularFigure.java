@@ -8,6 +8,7 @@ import uk.ac.ox.softeng.dpa.smallerdraw.Handle;
 import uk.ac.ox.softeng.dpa.smallerdraw.Locatable;
 import uk.ac.ox.softeng.dpa.smallerdraw.command.ModifyCommand;
 import uk.ac.ox.softeng.dpa.smallerdraw.util.Geometry;
+import uk.ac.ox.softeng.dpa.smallerdraw.util.RectangleUtils;
 
 /**
  * An abstract figure for rectangular shapes.
@@ -59,136 +60,82 @@ public abstract class AbstractRectangularFigure extends AbstractFigure {
 	 * @param r the bounds
 	 */
 	public void setRectangle(Rectangle r) {
-		Point p = r.getLocation();
-		p.translate(r.width, r.height);
-		this.modify(new SetBounds(r.getLocation(), p));
+		this.modify(new SetBounds(r));
 	}
 	
 	@Override
 	public void move(Dimension offset) {
-		final Point nw = getNW();
-		final Point se = getSE();
+		final Point nw = RectangleUtils.getNW(bounds);
+		final Point se = RectangleUtils.getSE(bounds);
 		nw.translate(offset.width, offset.height);
 		se.translate(offset.width, offset.height);
 		this.modify(new SetBounds(nw, se));
 	}
 
-	protected Point getCenter() {
-		final Point p = bounds.getLocation();
-		p.translate(bounds.width / 2, bounds.height / 2);
-		return p;
-	}
-
-	protected Point getN() {
-		Point p = bounds.getLocation();
-		p.translate(bounds.width / 2, 0);
-		return p;
-	}
-
-	protected Point getS() {
-		final Point p = bounds.getLocation();
-		p.translate(bounds.width / 2, bounds.height);
-		return p;
-	}
-
-	protected Point getE() {
-		final Point p = bounds.getLocation();
-		p.translate(bounds.width, bounds.height / 2);
-		return p;
-	}
-
-	protected Point getW() {
-		Point p = bounds.getLocation();
-		p.translate(0, bounds.height / 2);
-		return p;
-	}
-
-	protected Point getNE() {
-		Point p = bounds.getLocation();
-		p.translate(bounds.width, 0);
-		return p;
-	}
-
-	protected Point getNW() {
-		return bounds.getLocation();
-	}
-
-	protected Point getSE() {
-		Point p = bounds.getLocation();
-		p.translate(bounds.width, bounds.height);
-		return p;
-	}
-
-	protected Point getSW() {
-		Point p = bounds.getLocation();
-		p.translate(0, bounds.height);
-		return p;
-	}
-
 	protected void setCenter(final Point p) {
-		final Point c = getCenter();
+		final Point c = RectangleUtils.getCenter(bounds);
 		this.move(new Dimension(p.x - c.x, p.y - c.y));
 	}
 
 	protected void setN(final Point p) {
-		final Point se = getSE();
+		final Point se = RectangleUtils.getSE(bounds);
 		if (se.y - p.y >= MINHEIGHT) {
-			final Point nw = getNW();
+			final Point nw = RectangleUtils.getNW(bounds);
 			nw.translate(0, p.y - nw.y);
 			this.modify(new SetBounds(nw, se));
 		}
 	}
 	
 	protected void setW(final Point p) {
-		final Point se = getSE();
+		final Point se = RectangleUtils.getSE(bounds);
 		if (se.x - p.x >= MINWIDTH) {
-			final Point nw = getNW();
+			final Point nw = RectangleUtils.getNW(bounds);
 			nw.translate(p.x - nw.x, 0);
 			this.modify(new SetBounds(nw, se));
 		}
 	}
 	
 	protected void setS(final Point p) {
-		final Point nw = getNW();
+		final Point nw = RectangleUtils.getNW(bounds);
 		if (p.y - nw.y >= MINHEIGHT) {
-			final Point se = getSE();
+			final Point se = RectangleUtils.getSE(bounds);
 			se.translate(0, p.y - se.y);
 			this.modify(new SetBounds(nw, se));
 		}
 	}
 	
 	protected void setE(final Point p) {
-		final Point nw = getNW();
+		final Point nw = RectangleUtils.getNW(bounds);
 		if (p.x - nw.x >= MINWIDTH) {
-			final Point se = getSE();
+			final Point se = RectangleUtils.getSE(bounds);
 			se.translate(p.x - se.x, 0);
 			this.modify(new SetBounds(nw, se));
 		}
 	}
 	
 	protected void setNE(final Point p) {
-		final Point sw = getSW();
+		final Point sw = RectangleUtils.getSW(bounds);
 		if (p.x - sw.x >= MINWIDTH && sw.y - p.y >= MINHEIGHT) {
 			this.modify(new SetBounds(p, sw));
 		}
 	}
 
 	protected void setNW(final Point p) {
-		final Point se = getSE();
+		final Point se = RectangleUtils.getSE(bounds);
 		if (se.x - p.x >= MINWIDTH && se.y - p.y >= MINHEIGHT) {
 			this.modify(new SetBounds(p, se));
 		}
 	}
 
 	protected void setSE(final Point p) {
-		final Point nw = getNW();
+		final Point nw = RectangleUtils.getNW(bounds);
 		if (p.x - nw.x >= MINWIDTH && p.y - nw.y >= MINHEIGHT) {
 			this.modify(new SetBounds(p, nw));
 		}
 	}
 
 	protected void setSW(final Point p) {
-		final Point ne = getNE();
+		final Point ne = RectangleUtils.getNE(bounds);
 		if (ne.x - p.x >= MINWIDTH && p.y - ne.y >= MINHEIGHT) {
 			this.modify(new SetBounds(p, ne));
 		}
@@ -196,6 +143,10 @@ public abstract class AbstractRectangularFigure extends AbstractFigure {
 
 	protected final class SetBounds implements ModifyCommand {
 		private final Rectangle r;
+
+		protected SetBounds(Rectangle r) {
+			this.r = new Rectangle(r);
+		}
 
 		protected SetBounds(Point p1, Point p2) {
 			r = Geometry.rectangleFromPoints(p1, p2);
@@ -210,7 +161,7 @@ public abstract class AbstractRectangularFigure extends AbstractFigure {
 	protected final class CLocator implements Locatable {
 		@Override
 		public Point getLocation() {
-			return getCenter();
+			return RectangleUtils.getCenter(bounds);
 		}
 	
 		@Override
@@ -223,7 +174,7 @@ public abstract class AbstractRectangularFigure extends AbstractFigure {
 	protected final class NLocator implements Locatable {
 		@Override
 		public Point getLocation() {
-			return getN();
+			return RectangleUtils.getN(bounds);
 		}
 
 		@Override
@@ -235,7 +186,7 @@ public abstract class AbstractRectangularFigure extends AbstractFigure {
 	protected final class SLocator implements Locatable {
 		@Override
 		public Point getLocation() {
-			return getS();
+			return RectangleUtils.getS(bounds);
 		}
 
 		@Override
@@ -247,7 +198,7 @@ public abstract class AbstractRectangularFigure extends AbstractFigure {
 	protected final class ELocator implements Locatable {
 		@Override
 		public Point getLocation() {
-			return getE();
+			return RectangleUtils.getE(bounds);
 		}
 	
 		@Override
@@ -259,7 +210,7 @@ public abstract class AbstractRectangularFigure extends AbstractFigure {
 	protected final class WLocator implements Locatable {
 		@Override
 		public Point getLocation() {
-			return getW();
+			return RectangleUtils.getW(bounds);
 		}
 
 		@Override
@@ -271,7 +222,7 @@ public abstract class AbstractRectangularFigure extends AbstractFigure {
 	protected final class NELocator implements Locatable {
 		@Override
 		public Point getLocation() {
-			return getNE();
+			return RectangleUtils.getNE(bounds);
 		}
 	
 		@Override
@@ -283,7 +234,7 @@ public abstract class AbstractRectangularFigure extends AbstractFigure {
 	protected final class NWLocator implements Locatable {
 		@Override
 		public Point getLocation() {
-			return getNW();
+			return RectangleUtils.getNW(bounds);
 		}
 	
 		@Override
@@ -295,7 +246,7 @@ public abstract class AbstractRectangularFigure extends AbstractFigure {
 	protected final class SELocator implements Locatable {
 		@Override
 		public Point getLocation() {
-			return getSE();
+			return RectangleUtils.getSE(bounds);
 		}
 	
 		@Override
@@ -307,7 +258,7 @@ public abstract class AbstractRectangularFigure extends AbstractFigure {
 	protected final class SWLocator implements Locatable {
 		@Override
 		public Point getLocation() {
-			return getSW();
+			return RectangleUtils.getSW(bounds);
 		}
 	
 		@Override

@@ -1,9 +1,11 @@
 package uk.ac.ox.softeng.dpa.smallerdraw.figures;
 
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.Shape;
 
 import uk.ac.ox.softeng.dpa.smallerdraw.util.Geometry;
+import uk.ac.ox.softeng.dpa.smallerdraw.util.RectangleUtils;
 
 /**
  * A figure for rectangles
@@ -27,10 +29,14 @@ public class RectangleFigure extends AbstractRectangularFigure {
 	
 	@Override
 	public boolean contains(Point p) {
+		Rectangle bounds = getBounds();
 		if (isFilled()) {
-			return getBounds().contains(p);
+			return bounds.contains(p);
 		} else {
-			Point nw = getNW(), sw = getSW(), ne = getNE(), se = getSE();
+			Point nw = RectangleUtils.getNW(bounds),
+			      sw = RectangleUtils.getSW(bounds),
+			      ne = RectangleUtils.getNE(bounds),
+			      se = RectangleUtils.getSE(bounds);
 			// check the left, right, top, and bottom edges as line segments
 			return Geometry.linePointIntersect(nw, sw, p) ||
 			       Geometry.linePointIntersect(ne, se, p) ||
