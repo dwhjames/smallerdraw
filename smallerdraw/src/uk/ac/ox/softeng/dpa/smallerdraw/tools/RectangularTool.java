@@ -12,24 +12,23 @@ import uk.ac.ox.softeng.dpa.smallerdraw.util.Geometry;
  * 
  * @author Daniel W.H. James
  * @version DPA March 2012
- * @param <F> a subtype of {@link AbstractRectangularFigure}
  * @see AbstractRectangularFigure
  */
-public class RectangularTool<F extends AbstractRectangularFigure> extends EmptyTool {
+public class RectangularTool extends EmptyTool {
 	
 	private Point start;
-	private F figure;
-	private Class<F> type;
+	private AbstractRectangularFigure figure;
+	private AbstractRectangularFigure prototype;
 
-	public RectangularTool(Model model, Class<F> type) {
+	public RectangularTool(Model model, AbstractRectangularFigure prototype) {
 		super(model);
-		this.type = type; 
+		this.prototype = prototype;
 	}
 
 	@Override
 	public void onMouseDown(Point pos) {
 		start = pos;
-		figure = createFigure();
+		figure = prototype.clone();
 		figure.setRectangle(new Rectangle(pos));
 		model.add(figure);
 	}
@@ -46,17 +45,5 @@ public class RectangularTool<F extends AbstractRectangularFigure> extends EmptyT
 			model.remove(figure);
 		}
 		figure = null;
-	}
-	
-	private F createFigure() {
-		F result = null;
-		try {
-			result = type.newInstance();
-		} catch (IllegalAccessException ex) {
-			// cannot access class or nullary constructor
-		} catch (InstantiationException ex) {
-			// not an instantiable class with a nullary constructor
-		}
-		return result;
 	}
 }
