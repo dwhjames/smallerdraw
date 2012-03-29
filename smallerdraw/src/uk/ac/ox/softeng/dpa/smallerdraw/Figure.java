@@ -104,4 +104,11 @@ public interface Figure extends Drawable, Disposable, Cloneable {
 	 * @see Cloneable
 	 */
 	Figure clone();
+
+	/**
+	 * Accepts a visitor to this figure.
+	 * 
+	 * @param visitor a visitor to this figure
+	 */
+	void accept(Visitor visitor);
 }

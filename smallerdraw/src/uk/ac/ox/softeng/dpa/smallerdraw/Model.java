@@ -59,4 +59,10 @@ public interface Model {
 	 */
 	Iterable<Figure> figuresReversed();
 
+	/**
+	 * Accepts a visitor to this model.
+	 * 
+	 * @param visitor a visitor to this model
+	 */
+	void accept(Visitor visitor);
 }

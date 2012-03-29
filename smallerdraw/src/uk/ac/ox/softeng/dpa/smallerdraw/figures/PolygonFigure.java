@@ -9,6 +9,7 @@ import java.util.Arrays;
 
 import uk.ac.ox.softeng.dpa.smallerdraw.Handle;
 import uk.ac.ox.softeng.dpa.smallerdraw.Locatable;
+import uk.ac.ox.softeng.dpa.smallerdraw.Visitor;
 import uk.ac.ox.softeng.dpa.smallerdraw.command.ModifyCommand;
 import uk.ac.ox.softeng.dpa.smallerdraw.util.Geometry;
 
@@ -121,6 +122,11 @@ public class PolygonFigure extends AbstractFigure {
 				}
 			}
 		});
+	}
+
+	@Override
+	public void accept(Visitor visitor) {
+		visitor.visit(this);
 	}
 
 	@Override

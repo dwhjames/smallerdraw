@@ -8,6 +8,7 @@ import java.awt.geom.Line2D;
 
 import uk.ac.ox.softeng.dpa.smallerdraw.Handle;
 import uk.ac.ox.softeng.dpa.smallerdraw.Locatable;
+import uk.ac.ox.softeng.dpa.smallerdraw.Visitor;
 import uk.ac.ox.softeng.dpa.smallerdraw.command.ModifyCommand;
 import uk.ac.ox.softeng.dpa.smallerdraw.util.Geometry;
 
@@ -110,6 +111,11 @@ public class LineFigure extends AbstractFigure {
 		this.modify(new SetEndLocation(p));
 	}
 	
+	@Override
+	public void accept(Visitor visitor) {
+		visitor.visit(this);
+	}
+
 	@Override
 	protected Shape createShape() {
 		return new Line2D.Double(getStart(), getEnd());

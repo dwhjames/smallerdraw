@@ -5,6 +5,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
 
+import uk.ac.ox.softeng.dpa.smallerdraw.Visitor;
 import uk.ac.ox.softeng.dpa.smallerdraw.util.RectangleUtils;
 
 /**
@@ -52,7 +53,12 @@ public class OvalFigure extends AbstractRectangularFigure {
 			       (dx * dx * hs2 + dy * dy * ws2 >= ws2 * hs2);
 		}
 	}
-	
+
+	@Override
+	public void accept(Visitor visitor) {
+		visitor.visit(this);
+	}
+
 	@Override
 	protected Shape createShape() {
 		Rectangle r = this.getBounds();

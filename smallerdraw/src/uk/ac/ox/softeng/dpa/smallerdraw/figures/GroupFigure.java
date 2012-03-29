@@ -11,6 +11,7 @@ import java.util.List;
 import uk.ac.ox.softeng.dpa.smallerdraw.Figure;
 import uk.ac.ox.softeng.dpa.smallerdraw.Handle;
 import uk.ac.ox.softeng.dpa.smallerdraw.Locatable;
+import uk.ac.ox.softeng.dpa.smallerdraw.Visitor;
 import uk.ac.ox.softeng.dpa.smallerdraw.command.RedrawCommand;
 import uk.ac.ox.softeng.dpa.smallerdraw.util.RectangleUtils;
 
@@ -143,6 +144,11 @@ public class GroupFigure extends AbstractFigure {
 	@Override
 	public void setFilled(boolean filled) {
 		return;
+	}
+
+	@Override
+	public void accept(Visitor visitor) {
+		visitor.visit(this);
 	}
 
 	/**

@@ -4,6 +4,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
 
+import uk.ac.ox.softeng.dpa.smallerdraw.Visitor;
 import uk.ac.ox.softeng.dpa.smallerdraw.util.Geometry;
 import uk.ac.ox.softeng.dpa.smallerdraw.util.RectangleUtils;
 
@@ -44,7 +45,12 @@ public class RectangleFigure extends AbstractRectangularFigure {
 			       Geometry.linePointIntersect(sw, se, p);
 		}
 	}
-	
+
+	@Override
+	public void accept(Visitor visitor) {
+		visitor.visit(this);
+	}
+
 	@Override
 	protected Shape createShape() {
 		return getBounds();

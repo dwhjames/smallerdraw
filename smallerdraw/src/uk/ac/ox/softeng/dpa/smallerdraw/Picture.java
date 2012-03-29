@@ -115,6 +115,11 @@ public class Picture implements SelectableModel, Drawable {
 		}
 	}
 	
+	@Override
+	public void accept(Visitor visitor) {
+		visitor.visit(this);
+	}
+
 	private void redraw(Rectangle clip) {
 		clip.grow(Handle.WIDTH + 2, Handle.HEIGHT + 2);
 		for (View view : views) {
