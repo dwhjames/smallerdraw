@@ -72,7 +72,7 @@ public abstract class AbstractFigure implements Figure {
 	 * @param g a Java 2D graphics context
 	 */
 	protected void drawHandles(Graphics2D g) {
-		if (selected) {
+		if (isSelected()) {
 			for (Handle handle : handles) {
 				handle.draw(g);
 			}
