@@ -37,6 +37,7 @@ import uk.ac.ox.softeng.dpa.smallerdraw.tools.PolygonTool;
 import uk.ac.ox.softeng.dpa.smallerdraw.tools.RectangularTool;
 import uk.ac.ox.softeng.dpa.smallerdraw.tools.SelectionTool;
 import uk.ac.ox.softeng.dpa.smallerdraw.util.IterableUtils;
+import uk.ac.ox.softeng.dpa.smallerdraw.visitors.ConsoleVisitor;
 
 /**
  * Setup the Java Swing GUI
@@ -84,6 +85,8 @@ public class SmallerDraw {
 		
 		menu.add(new JMenuItem("Open"));
 		menu.add(new JMenuItem("Save"));
+		menu.addSeparator();
+		menu.add(new JMenuItem(new ConsoleMenuAction(picture)));
 		// end File menu
 		
 		// begin Edit menu
@@ -182,6 +185,25 @@ public class SmallerDraw {
 		pane.add(canvas, BorderLayout.CENTER);
 	}
 	
+	/**
+	 * The action for the 'Console' menu item.
+	 */
+	@SuppressWarnings("serial")
+	private static final class ConsoleMenuAction extends AbstractAction {
+		private final Model model;
+
+		private ConsoleMenuAction(Model model) {
+			super("Dump to console");
+			this.model = model;
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			ConsoleVisitor visitor = new ConsoleVisitor();
+			model.accept(visitor);
+		}
+	}
+
 	/**
 	 * The action for the 'Delete' menu item.
 	 */
