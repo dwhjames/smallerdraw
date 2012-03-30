@@ -74,6 +74,10 @@ public class PolygonFigure extends AbstractFigure {
 	public Point getPoint(int i) {
 		return polygon[i];
 	}
+
+	public int getSize() {
+		return polygon.length;
+	}
 	
 	/**
 	 * Sets the location of the {@code i}th point in this figure.

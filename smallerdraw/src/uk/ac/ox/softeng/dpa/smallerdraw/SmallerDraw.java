@@ -9,6 +9,10 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -17,6 +21,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -38,6 +43,7 @@ import uk.ac.ox.softeng.dpa.smallerdraw.tools.RectangularTool;
 import uk.ac.ox.softeng.dpa.smallerdraw.tools.SelectionTool;
 import uk.ac.ox.softeng.dpa.smallerdraw.util.IterableUtils;
 import uk.ac.ox.softeng.dpa.smallerdraw.visitors.ConsoleVisitor;
+import uk.ac.ox.softeng.dpa.smallerdraw.visitors.XMLVisitor;
 
 /**
  * Setup the Java Swing GUI
@@ -74,6 +80,7 @@ public class SmallerDraw {
 	
 	private static final Picture picture = new Picture();
 	
+	private static final JFileChooser fileChooser = new JFileChooser();
 	private static final JMenuBar menuBar = new JMenuBar();
 	private static final JPopupMenu popupMenu = new JPopupMenu();
 	static {
@@ -84,7 +91,7 @@ public class SmallerDraw {
 		menuBar.add(menu);
 		
 		menu.add(new JMenuItem("Open"));
-		menu.add(new JMenuItem("Save"));
+		menu.add(new JMenuItem(new SaveMenuAction(picture)));
 		menu.addSeparator();
 		menu.add(new JMenuItem(new ConsoleMenuAction(picture)));
 		// end File menu
@@ -185,6 +192,37 @@ public class SmallerDraw {
 		pane.add(canvas, BorderLayout.CENTER);
 	}
 	
+	/**
+	 * The action for the 'Save' menu item.
+	 */
+	@SuppressWarnings("serial")
+	private static final class SaveMenuAction extends AbstractAction {
+		private final Picture model;
+
+		private SaveMenuAction(Picture model) {
+			super("Save");
+			this.model = model;
+			putValue(ACCELERATOR_KEY,
+					 KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.META_DOWN_MASK));
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			int returnVal = fileChooser.showSaveDialog(canvas);
+
+	        if (returnVal == JFileChooser.APPROVE_OPTION) {
+	            File file = fileChooser.getSelectedFile();
+	            try {
+	            	OutputStream outputStream = new FileOutputStream(file);
+	            	XMLVisitor xmlVisitor = new XMLVisitor(outputStream);
+	            	xmlVisitor.start(model);
+	            } catch (FileNotFoundException ex) {
+	            	ex.printStackTrace();
+	            }
+	        }
+		}
+	}
+
 	/**
 	 * The action for the 'Console' menu item.
 	 */
