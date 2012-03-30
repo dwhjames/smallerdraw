@@ -28,6 +28,9 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 
+import uk.ac.ox.softeng.dpa.smallerdraw.command.AddFigureCommand;
+import uk.ac.ox.softeng.dpa.smallerdraw.command.UndoManager;
+import uk.ac.ox.softeng.dpa.smallerdraw.command.UndoableCommand;
 import uk.ac.ox.softeng.dpa.smallerdraw.figures.GroupFigure;
 import uk.ac.ox.softeng.dpa.smallerdraw.figures.OvalFigure;
 import uk.ac.ox.softeng.dpa.smallerdraw.figures.RectangleFigure;
@@ -73,6 +76,8 @@ public class SmallerDraw {
 	}
 	
 	private static final Picture picture = new Picture();
+	private static final UndoManager undoManager = new UndoManager();
+	private static final AddFigureCommand undoableAddFigureCommand = new UndoableAddFigureCommand();
 	
 	private static final JMenuBar menuBar = new JMenuBar();
 	private static final JPopupMenu popupMenu = new JPopupMenu();
@@ -93,6 +98,17 @@ public class SmallerDraw {
 		menu = new JMenu("Edit");
 		menuBar.add(menu);
 		
+		action = new UndoMenuAction();
+		menu.add(new JMenuItem(action));
+		popupMenu.add(new JMenuItem(action));
+
+		action = new RedoMenuAction();
+		menu.add(new JMenuItem(action));
+		popupMenu.add(new JMenuItem(action));
+
+		menu.addSeparator();
+		popupMenu.addSeparator();
+
 		action = new DeleteMenuAction(picture);
 		menu.add(new JMenuItem(action));
 		popupMenu.add(new JMenuItem(action));
@@ -149,9 +165,13 @@ public class SmallerDraw {
 		new ToolAction("Line",
 				       new LineTool(picture)),
 		new ToolAction("Rectangle",
-				       new RectangularTool(picture, new RectangleFigure())),
+				       new RectangularTool(picture,
+				    		               new RectangleFigure(),
+				    		               undoableAddFigureCommand)),
 		new ToolAction("Oval",
-				       new RectangularTool(picture, new OvalFigure())),
+				       new RectangularTool(picture,
+				    		               new OvalFigure(),
+				    		               undoableAddFigureCommand)),
 		new ToolAction("Triangle",
 				       new PolygonTool(picture, 3)),
 		new ToolAction("Pentagon",
@@ -201,6 +221,41 @@ public class SmallerDraw {
 		public void actionPerformed(ActionEvent e) {
 			ConsoleVisitor visitor = new ConsoleVisitor();
 			model.accept(visitor);
+		}
+	}
+
+	/**
+	 * The action for the 'Undo' menu item.
+	 */
+	@SuppressWarnings("serial")
+	private static final class UndoMenuAction extends AbstractAction {
+		private UndoMenuAction() {
+			super("Undo");
+			putValue(ACCELERATOR_KEY,
+					 KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.META_DOWN_MASK));
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			undoManager.undoIt();
+		}
+	}
+
+	/**
+	 * The action for the 'Undo' menu item.
+	 */
+	@SuppressWarnings("serial")
+	private static final class RedoMenuAction extends AbstractAction {
+		private RedoMenuAction() {
+			super("Redo");
+			putValue(ACCELERATOR_KEY,
+					 KeyStroke.getKeyStroke(KeyEvent.VK_Z,
+							                InputEvent.META_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			undoManager.redoIt();
 		}
 	}
 
@@ -396,6 +451,22 @@ public class SmallerDraw {
 		}
 	}
 	
+	private static final class UndoableAddFigureCommand implements AddFigureCommand {
+		@Override
+		public void execute(final Figure figure) {
+			undoManager.doIt(new UndoableCommand() {
+				@Override
+				public void doIt() {
+					picture.add(figure);
+				}
+				@Override
+				public void undoIt() {
+					picture.remove(figure);
+				}
+			});
+		}
+	}
+
 	/**
 	 * The mouse event listener to trigger the popup menu 
 	 */

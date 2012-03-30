@@ -4,6 +4,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 
 import uk.ac.ox.softeng.dpa.smallerdraw.Model;
+import uk.ac.ox.softeng.dpa.smallerdraw.command.AddFigureCommand;
 import uk.ac.ox.softeng.dpa.smallerdraw.figures.AbstractRectangularFigure;
 import uk.ac.ox.softeng.dpa.smallerdraw.figures.RectangularHandlesDecorator;
 import uk.ac.ox.softeng.dpa.smallerdraw.util.Geometry;
@@ -20,10 +21,12 @@ public class RectangularTool extends EmptyTool {
 	private Point start;
 	private AbstractRectangularFigure figure;
 	private AbstractRectangularFigure prototype;
+	private AddFigureCommand addFigureCommand;
 
-	public RectangularTool(Model model, AbstractRectangularFigure prototype) {
+	public RectangularTool(Model model, AbstractRectangularFigure prototype, AddFigureCommand addFigureCommand) {
 		super(model);
 		this.prototype = new RectangularHandlesDecorator(prototype);
+		this.addFigureCommand = addFigureCommand;
 	}
 
 	@Override
@@ -41,9 +44,10 @@ public class RectangularTool extends EmptyTool {
 	
 	@Override
 	public void onMouseUp(Point pos) {
+		model.remove(figure);
 		if (Geometry.pythagoras(figure.getBounds().width, figure.getBounds().height)
-				< AbstractRectangularFigure.MINWIDTH * AbstractRectangularFigure.MINHEIGHT) {
-			model.remove(figure);
+				> AbstractRectangularFigure.MINWIDTH * AbstractRectangularFigure.MINHEIGHT) {
+			addFigureCommand.execute(figure);
 		}
 		figure = null;
 	}
