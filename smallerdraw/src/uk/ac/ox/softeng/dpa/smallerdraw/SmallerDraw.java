@@ -9,10 +9,11 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -32,6 +33,7 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
+import javax.xml.stream.XMLStreamException;
 
 import uk.ac.ox.softeng.dpa.smallerdraw.figures.GroupFigure;
 import uk.ac.ox.softeng.dpa.smallerdraw.figures.OvalFigure;
@@ -213,10 +215,13 @@ public class SmallerDraw {
 	        if (returnVal == JFileChooser.APPROVE_OPTION) {
 	            File file = fileChooser.getSelectedFile();
 	            try {
-	            	OutputStream outputStream = new FileOutputStream(file);
-	            	XMLVisitor xmlVisitor = new XMLVisitor(outputStream);
+	            	Writer writer = new BufferedWriter(new FileWriter(file));
+	            	XMLVisitor xmlVisitor = new XMLVisitor(writer);
 	            	xmlVisitor.start(model);
-	            } catch (FileNotFoundException ex) {
+	            	writer.close();
+	            } catch (IOException ex) {
+	            	ex.printStackTrace();
+	            } catch (XMLStreamException ex) {
 	            	ex.printStackTrace();
 	            }
 	        }
