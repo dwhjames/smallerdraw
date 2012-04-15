@@ -82,6 +82,7 @@ public class RectangularHandlesDecorator extends AbstractRectangularFigure {
 	@Override
 	public void move(Dimension offset) {
 		delegate.move(offset);
+		notifyHandles();
 	}
 
 	@Override
@@ -110,6 +111,7 @@ public class RectangularHandlesDecorator extends AbstractRectangularFigure {
 	@Override
 	protected void modify(ModifyCommand command) {
 		delegate.modify(command);
+		notifyHandles();
 	}
 
 	@Override
@@ -120,6 +122,23 @@ public class RectangularHandlesDecorator extends AbstractRectangularFigure {
 	@Override
 	public void setRectangle(Rectangle r) {
 		delegate.setRectangle(r);
+		notifyHandles();
+	}
+
+	@Override
+	public Handle handleAt(Point p) {
+		for (Handle handle : handles) {
+			if (handle.contains(p)) {
+				return handle;
+			}
+		}
+		return delegate.handleAt(p);
+	}
+
+	private void notifyHandles() {
+		for (Handle handle : handles) {
+			handle.locationChanged();
+		}
 	}
 
 	protected final class CLocator implements Locatable {
