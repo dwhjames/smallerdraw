@@ -18,7 +18,7 @@ import uk.ac.ox.softeng.dpa.smallerdraw.util.Geometry;
  * @author Daniel W.H. James
  * @version DPA March 2012
  */
-public class PolygonFigure extends AbstractFigure {
+public class PolygonFigure extends AbstractRectangularFigure {
 	
 	/*
 	 * invariant: length >= 3 
@@ -92,6 +92,26 @@ public class PolygonFigure extends AbstractFigure {
 	@Override
 	public Rectangle getBounds() {
 		return createShape().getBounds();
+	}
+
+	@Override
+	public void setRectangle(final Rectangle r) {
+		final Rectangle bounds = getBounds();
+		final Dimension offset = new Dimension(r.x - bounds.x, r.y - bounds.y);
+		final float swidth = bounds.width == 0 ? 1 : (float) r.width / bounds.width;
+		final float sheight = bounds.height == 0 ? 1 : (float) r.height / bounds.height;
+
+		this.modify(new ModifyCommand() {
+			@Override
+			public void execute() {
+				int x = bounds.x + offset.width;
+				int y = bounds.y + offset.height;
+				for (Point p : polygon) {
+					p.x = Geometry.linearInterpolation(x, p.x + offset.width, swidth);
+					p.y = Geometry.linearInterpolation(y, p.y + offset.height, sheight);
+				}
+			}
+		});
 	}
 
 	@Override

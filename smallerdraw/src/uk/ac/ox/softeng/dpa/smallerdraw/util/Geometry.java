@@ -51,4 +51,18 @@ public abstract class Geometry {
 	{
 		return x*x + y*y;
 	}
+
+	/**
+	 * Interpolate linearly between u and v with s as the increment
+	 * 
+	 * @param u the starting value of the interpolant
+	 * @param v the ending value of the interpolant
+	 * @param s the increment to be calculated along the interpolant, must be between 0 and 1.0f for linear interpolation
+	 * 
+	 * @return the interpolated value, which equals (u + (int) (0.5f + s * (float) (v - u)))
+	 */
+	public static int linearInterpolation(int u, int v, float s)
+	{
+		return u + (int) (0.5f + s * (float) (v - u));
+	}
 }

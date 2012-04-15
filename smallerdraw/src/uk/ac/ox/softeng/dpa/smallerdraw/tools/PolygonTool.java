@@ -5,6 +5,7 @@ import java.awt.Point;
 import uk.ac.ox.softeng.dpa.smallerdraw.Model;
 import uk.ac.ox.softeng.dpa.smallerdraw.figures.LineFigure;
 import uk.ac.ox.softeng.dpa.smallerdraw.figures.PolygonFigure;
+import uk.ac.ox.softeng.dpa.smallerdraw.figures.RectangularHandlesDecorator;
 
 /**
  * A tool for drawing polygons.
@@ -59,6 +60,8 @@ public class PolygonTool extends EmptyTool {
 						figure.add(pos);
 					} else {
 						i = 0;
+						model.remove(figure);
+						model.add(new RectangularHandlesDecorator(figure));
 					}
 					break;
 				}
